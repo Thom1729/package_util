@@ -1,7 +1,4 @@
-import sublime
 import sublime_plugin
-import os
-import os.path
 import sys
 
 from sublime_lib import ResourcePath

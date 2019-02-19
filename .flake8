@@ -6,5 +6,6 @@ ignore =
 
 exclude =
     .git,
+    tests/fixtures
 
 max-line-length = 99
