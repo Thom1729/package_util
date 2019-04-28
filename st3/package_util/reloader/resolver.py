@@ -1,4 +1,4 @@
-from ..compat.typing import List, Iterable, Set, Tuple
+from ..compat.typing import List, Collection, Set, Tuple
 
 DependencyRelationships = List[Tuple[str, str]]
 
@@ -20,7 +20,7 @@ except ImportError:  # pragma: nocoverage
 
 
 def get_dependents(
-    initial: Iterable[str],
+    initial: Collection[str],
     dependency_relationships: DependencyRelationships
 ) -> Set[str]:
     recursive_dependencies = set()  # type: Set[str]

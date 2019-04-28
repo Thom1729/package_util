@@ -8,12 +8,12 @@ from .resolver import get_dependency_relationships, get_dependents
 
 from ..util.module_utils import module_paths
 from types import ModuleType
-from ..compat.typing import Generator, Iterable, Tuple
+from ..compat.typing import Container, Iterable, Tuple
 
 
 def get_package_modules(
-    package_names: Iterable[str]
-) -> Generator[Tuple[ModuleType, bool], None, None]:
+    package_names: Container[str]
+) -> Iterable[Tuple[ModuleType, bool]]:
     for module in sys.modules.values():
         for file_path in module_paths(module):
             try:
@@ -27,7 +27,7 @@ def get_package_modules(
                     break
 
 
-def reload_package(pkg_name: str, verbose: bool = True) -> None:
+def reload_package(pkg_name: str) -> None:
     packages = get_dependents({pkg_name}, get_dependency_relationships())
     modules = list(get_package_modules(packages))
 
@@ -45,7 +45,7 @@ def reload_package(pkg_name: str, verbose: bool = True) -> None:
     for module in plugins:
         sublime_plugin.unload_module(module)
 
-    with ReloadingImporter(sorted_modules, verbose) as reload:
+    with ReloadingImporter(sorted_modules) as reload:
         for module in sorted_modules:
             reload(module)
 

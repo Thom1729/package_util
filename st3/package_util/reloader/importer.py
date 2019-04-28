@@ -15,9 +15,8 @@ Scope = Optional[Dict[str, object]]
 class ReloadingImporter():
     _orig___import__ = None  # type: Callable[[str, Scope, Scope, Tuple, int], ModuleType]
 
-    def __init__(self, modules: Iterable[ModuleType], verbose: bool) -> None:
+    def __init__(self, modules: Iterable[ModuleType]) -> None:
         self._modules_to_reload = set(modules)
-        self._verbose = verbose
         self._depth = 0
 
     @contextmanager

@@ -5,7 +5,7 @@ from .compat.typing import Generator
 
 
 @contextmanager
-def ignore_package(name: str) -> Generator:
+def ignore_package(name: str) -> Generator[None, None, None]:
     preferences = sublime.load_settings('Preferences.sublime-settings')
 
     ignored = preferences.get("ignored_packages").copy()

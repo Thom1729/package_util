@@ -1,5 +1,5 @@
 from types import ModuleType
-from ..compat.typing import List, Generator
+from ..compat.typing import List, Iterable
 
 
 def public_members(module: ModuleType) -> List[str]:
@@ -9,7 +9,7 @@ def public_members(module: ModuleType) -> List[str]:
         return [name for name in dir(module) if not name.startswith('_')]
 
 
-def module_paths(module: ModuleType) -> Generator[str, None, None]:
+def module_paths(module: ModuleType) -> Iterable[str]:
     try:
         yield module.__file__
     except AttributeError:
