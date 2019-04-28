@@ -1,0 +1,7 @@
+[run]
+omit = 
+    */tests/*
+    */_compat/*
+
+[report]
+show_missing = True

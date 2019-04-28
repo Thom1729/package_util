@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from sublime_lib import ResourcePath
-from packages_util import TemporaryPackage
+from package_util import TemporaryPackage
 
 
 class TestTemporaryPackage(TestCase):

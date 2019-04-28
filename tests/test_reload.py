@@ -1,9 +1,14 @@
 from importlib import import_module
 from unittest import TestCase
 
-from packages_util.reloader import reload_package
+from sublime_lib import ResourcePath
+from package_util import reload_package, TemporaryPackage
 
-from .helpers import package_fixture
+FIXTURES_PATH = ResourcePath.from_file_path(__file__).parent / 'fixtures'
+
+
+def package_fixture(fixture):
+    return TemporaryPackage(prefix=fixture, copy_from=FIXTURES_PATH / fixture)
 
 
 class TestReload(TestCase):

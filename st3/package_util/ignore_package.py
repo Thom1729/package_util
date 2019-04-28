@@ -1,10 +1,11 @@
 import sublime
 
 from contextlib import contextmanager
+from .compat.typing import Generator
 
 
 @contextmanager
-def ignore_package(name):
+def ignore_package(name: str) -> Generator:
     preferences = sublime.load_settings('Preferences.sublime-settings')
 
     ignored = preferences.get("ignored_packages").copy()

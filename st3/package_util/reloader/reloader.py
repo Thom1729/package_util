@@ -3,14 +3,17 @@ import sys
 
 from sublime_lib import ResourcePath
 
-from .dprint import dprint
 from .importer import ReloadingImporter
-from .resolver import resolve_dependencies
+from .resolver import get_dependency_relationships, get_dependents
 
 from ..util.module_utils import module_paths
+from types import ModuleType
+from ..compat.typing import Generator, Iterable, Tuple
 
 
-def get_package_modules(package_names):
+def get_package_modules(
+    package_names: Iterable[str]
+) -> Generator[Tuple[ModuleType, bool], None, None]:
     for module in sys.modules.values():
         for file_path in module_paths(module):
             try:
@@ -18,21 +21,14 @@ def get_package_modules(package_names):
             except ValueError:
                 continue
             else:
-                if path.package in package_names:
+                if path.package in package_names:  # type: ignore
                     is_plugin = len(path.parts) == 3
                     yield module, is_plugin
                     break
 
 
-def reload_package(pkg_name, verbose=True):
-    if pkg_name not in sys.modules:
-        dprint("error:", pkg_name, "is not loaded.")
-        return
-
-    if verbose:
-        dprint("begin", fill='=')
-
-    packages = resolve_dependencies(pkg_name)
+def reload_package(pkg_name: str, verbose: bool = True) -> None:
+    packages = get_dependents({pkg_name}, get_dependency_relationships())
     modules = list(get_package_modules(packages))
 
     sorted_modules = sorted(
@@ -55,6 +51,3 @@ def reload_package(pkg_name, verbose=True):
 
     for module in plugins:
         sublime_plugin.load_module(module)
-
-    if verbose:
-        dprint("end", fill='-')
