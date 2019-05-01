@@ -1,7 +1,7 @@
 from unittest import TestCase
 from types import ModuleType
 
-from package_util.reloader.resolver import get_dependents
+from package_util.util.dependencies import get_dependents
 from package_util.util.module_utils import public_members, module_paths
 
 

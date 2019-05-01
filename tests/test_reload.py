@@ -2,7 +2,7 @@ from importlib import import_module
 from unittest import TestCase
 
 from sublime_lib import ResourcePath
-from package_util import reload_package, TemporaryPackage
+from package_util import reload_packages, TemporaryPackage
 
 FIXTURES_PATH = ResourcePath.from_file_path(__file__).parent / 'fixtures'
 
@@ -25,7 +25,7 @@ class TestReload(TestCase):
             with path.joinpath('src/xyzzy.py').file_path().open('a') as file:
                 file.write('BAR = 2\n')
 
-            reload_package(path.package)
+            reload_packages({path.package})
 
             self.assertEqual(module.FOO, 2)
             self.assertEqual(module.BAR, 2)

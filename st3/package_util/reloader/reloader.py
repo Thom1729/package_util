@@ -4,9 +4,10 @@ import sys
 from sublime_lib import ResourcePath
 
 from .importer import ReloadingImporter
-from .resolver import get_dependency_relationships, get_dependents
-
+from ..compat.package_control import get_dependency_relationships
+from ..util.dependencies import get_dependents
 from ..util.module_utils import module_paths
+
 from types import ModuleType
 from ..compat.typing import Container, Iterable, Tuple
 
@@ -27,8 +28,8 @@ def get_package_modules(
                     break
 
 
-def reload_package(pkg_name: str) -> None:
-    packages = get_dependents({pkg_name}, get_dependency_relationships())
+def reload_packages(packages: Iterable[str]) -> None:
+    packages = get_dependents(packages, get_dependency_relationships())
     modules = list(get_package_modules(packages))
 
     sorted_modules = sorted(
