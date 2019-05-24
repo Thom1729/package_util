@@ -14,7 +14,7 @@ from ..compat.typing import Container, Iterable, Tuple
 
 def get_package_modules(
     package_names: Container[str]
-) -> Iterable[Tuple[ModuleType, bool]]:
+) -> Iterable[Tuple[ModuleType, ResourcePath]]:
     for module in sys.modules.values():
         for file_path in module_paths(module):
             try:
@@ -23,8 +23,7 @@ def get_package_modules(
                 continue
             else:
                 if path.package in package_names:  # type: ignore
-                    is_plugin = len(path.parts) == 3
-                    yield module, is_plugin
+                    yield module, path
                     break
 
 
@@ -33,14 +32,14 @@ def reload_packages(packages: Iterable[str]) -> None:
     modules = list(get_package_modules(packages))
 
     sorted_modules = sorted(
-        [module for module, is_plugin in modules],
+        [module for module, path in modules],
         key=lambda module: module.__name__.split('.')
     )
 
     plugins = [
         module
-        for module, is_plugin in modules
-        if is_plugin
+        for module, path in modules
+        if len(path.parts) == 3
     ]
 
     for module in plugins:
@@ -48,7 +47,10 @@ def reload_packages(packages: Iterable[str]) -> None:
 
     with ReloadingImporter(sorted_modules) as reload:
         for module in sorted_modules:
-            reload(module)
+            try:
+                reload(module)
+            except FileNotFoundError as e:
+                print(e)
 
     for module in plugins:
         sublime_plugin.load_module(module)

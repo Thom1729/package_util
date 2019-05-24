@@ -19,13 +19,28 @@ class TestReload(TestCase):
             self.assertEqual(module.FOO, 1)
             self.assertEqual(module.BAR, 1)
 
-            with path.joinpath('src/foo.py').file_path().open('a') as file:
-                file.write('FOO = 2\n')
-
-            with path.joinpath('src/xyzzy.py').file_path().open('a') as file:
-                file.write('BAR = 2\n')
+            for filename in ['foo.py', 'xyzzy.py']:
+                file_path = path.joinpath('src', filename).file_path()
+                file_path.with_name(filename + '.after_1').replace(file_path)
 
             reload_packages({path.package})
 
             self.assertEqual(module.FOO, 2)
             self.assertEqual(module.BAR, 2)
+
+    def test_remove_module(self):
+        with package_fixture('ReloadTest') as path:
+            module = import_module(path.package + '.src.foo')
+
+            self.assertEqual(module.FOO, 1)
+            self.assertEqual(module.BAR, 1)
+
+            for filename in ['foo.py']:
+                file_path = path.joinpath('src', filename).file_path()
+                file_path.with_name(filename + '.after_2').replace(file_path)
+
+            path.joinpath('src', 'xyzzy.py').file_path().unlink()
+
+            reload_packages({path.package})
+
+            self.assertEqual(module.FOO, 2)

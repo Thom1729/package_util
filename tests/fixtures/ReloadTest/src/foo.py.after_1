@@ -1,0 +1,4 @@
+FOO = 2
+
+from . import xyzzy
+BAR = xyzzy.BAR
